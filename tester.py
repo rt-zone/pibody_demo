@@ -2,16 +2,9 @@ from projectConfig import ProrjectConfig
 from neopixel import NeoPixel
 from machine import PWM, Pin, ADC
 from module import Module
+import gc
 
-cancel_button = Pin(20, Pin.IN)
-isRunning = True
-
-def cancel_handler(pin):
-    global isRunning
-    isRunning = False
-    print("Test cancelled")
-
-cancel_button.irq(trigger=Pin.IRQ_FALLING, handler=cancel_handler) 
+isRunning = False
 
 class Tester():
     def __init__(self, project_config: ProrjectConfig):
@@ -39,5 +32,23 @@ class Tester():
 
     def start(self):
         self.init()
+        print(f"Starting tester: {self.name}")
+        global isRunning
+        isRunning = True
         while isRunning:
             self.loop()
+
+    def stop(self):
+        self.led_tower = None
+        self.servo = None
+        self.servo9 = None
+
+        gc.collect()
+
+            
+    def cancel_handler(self, pin):
+        global isRunning
+        if not isRunning:
+            return
+        isRunning = False
+        print("Test cancelled")

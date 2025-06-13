@@ -138,20 +138,20 @@ class NeoPixelTester(Tester):
             self.manager.current_mode = (self.manager.current_mode - 1) % len(self.manager.modes)
             print("Режим:", self.manager.modes[self.manager.current_mode][0])
             self.last_button_press = ticks_ms()
-            while self.btn_prev.value() == 1: sleep(0.001)
+            # while self.btn_prev.value() == 1: sleep(0.001)
 
         if self.btn_next.value() == 1:
             self.manager.current_mode = (self.manager.current_mode + 1) % len(self.manager.modes)
             print("Режим:", self.manager.modes[self.manager.current_mode][0])
             self.last_button_press = ticks_ms()
-            while self.btn_next.value() == 1: sleep(0.001)
+            # while self.btn_next.value() == 1: sleep(0.001)
 
         if self.btn_color.value() == 1:
             idx = self.manager.colors.index(self.manager.current_color)
             self.manager.current_color = self.manager.colors[(idx + 1) % len(self.manager.colors)]
             print("Цвет изменен на:", self.manager.current_color)
             self.last_button_press = ticks_ms()
-            while self.btn_color.value() == 1: sleep(0.001)
+            # while self.btn_color.value() == 1: sleep(0.001)
 
     def loop(self):
         self.handle_buttons()

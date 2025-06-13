@@ -18,6 +18,12 @@ class Hinter():
         self.tft = tft
         self.clear()
 
+    def tester_is_running(self, tester_name):
+        self.clear()
+        text_color = st7789.color565(120, 255, 50)  # Green color
+        self.tft.text(font, f"{tester_name}", 10, 120, text_color, st7789.BLACK)
+        self.tft.text(font, "is running", 10, 150, text_color, st7789.BLACK)
+
     def clear(self):
         self.tft.fill(st7789.BLACK)
 
@@ -32,6 +38,7 @@ class Hinter():
         servo8 = config.getServo8()
         servo9 = config.getServo9()
         modules = config.getModules()
+
 
         self.tft.fill(st7789.BLACK)  # Clear the screen
         for module in modules:
@@ -51,3 +58,11 @@ class Hinter():
             txt += "/" if servo8 and servo9 else ""
             txt += "9" if servo9 else ""
             self.tft.text(font_small, txt, 110, 250, st7789.WHITE, st7789.BLACK)
+
+    def show_error(self, message):
+        self.clear()
+        text_color = st7789.color565(120, 100, 20)
+        
+        lines = [message[i:i+28] for i in range(0, len(message), 28)]
+        for i, line in enumerate(lines):
+            self.tft.text(font_small, line, 10, 20 + i * 20, text_color, st7789.BLACK)
