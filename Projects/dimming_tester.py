@@ -58,16 +58,3 @@ class DimmingTester(Tester):
             fade_to(dim_brightness, self.led)
 
     time.sleep(0.2)
-
-
-while True:
-    try:
-        tester = DimmingTester()
-        tester.init()
-        while True:
-            tester.loop()
-    except Exception as e:
-        print(f"Error in DimmingTester: {e}")
-        time.sleep(1)  # Pause before retrying
-
-
