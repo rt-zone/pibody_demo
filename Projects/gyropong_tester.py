@@ -6,7 +6,7 @@ from projectConfig import ProrjectConfig
 import time
 
 project_config = ProrjectConfig(
-    title = "GyroPong Tester",
+    title = "GyroPong",
     modules=[
         Module(Module.LED_R, "A"),
         Module(Module.LED_Y, "B"),
@@ -86,13 +86,3 @@ class GyroPongTester(Tester):
 
         update_leds(self.leds, led_index)
         time.sleep(0.1)
-
-while True:
-    try:
-        tester = GyroPongTester()
-        tester.init()
-        while True:
-            tester.loop()
-    except Exception as e:
-        print(f"Error in GyroPongTester: {e}")
-        time.sleep(1)  # Wait before retrying
