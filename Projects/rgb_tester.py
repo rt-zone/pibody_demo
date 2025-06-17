@@ -1,5 +1,6 @@
 from machine import Pin, ADC
 from time import sleep, ticks_ms
+from libs.encoder_updated import Encoder
 from module import Module 
 from projectConfig import ProrjectConfig
 from tester import Tester
@@ -11,47 +12,58 @@ project_config = ProrjectConfig(
         Module(Module.BUTTON_YELLOW, "B"),
         Module(Module.POTENTIOMETER, "C"),
         Module(Module.TOUCH_SENSOR, "D"),
-        Module(Module.SWITCH, "F")
+        Module(Module.SWITCH, "E"),
+        Module(Module.ENCODER, "F")
     ],
-    led_tower=True,
+    led_tower=True
 )
 class ModeManager:
-    def __init__(self, np, adc, n=8):
+    def __init__(self, np, adc, encoder, n=8):
         self.np = np
         self.adc = adc
+        self.encoder = encoder
         self.n = n
         self.current_mode = 0
-        self.current_color = (102, 0, 0)  # Красный
+        self.current_color = (255, 0, 0)
         self.colors = [
-            (102, 0, 0), (0, 102, 0), (0, 0, 102),
-            (102, 102, 0), (0, 102, 102), (102, 0, 102),
-            (102, 102, 102), (102, 66, 0)
+            (255, 0, 0), (0, 255, 0), (0, 0, 255),
+            (255, 255, 0), (0, 255, 255), (255, 0, 255),
+            (255, 255, 255), (255, 165, 0)
         ]
         self.rainbow_offset = 0
         self.comet_direction = 1
         self.last_update = 0
-        self.brightness = 0.4
+        self.speed = 0
+        self.max_speed = 0
+        self.min_speed = 0
 
         self.modes = [
-            ("Сплошной цвет", self.mode_solid),
-            ("Радуга", self.mode_rainbow),
-            ("Комета", self.mode_comet),
-            ("Мерцание", self.mode_blink)
+            ("Solid color", self.mode_solid),
+            ("Rainbow", self.mode_rainbow),
+            ("Comet", self.mode_comet),
+            ("Blinking", self.mode_blink)
         ]
 
-    def apply_brightness(self, color):
-        return tuple(int(c * self.brightness) for c in color)
+    def update_speed(self):
+        if self.last_update != self.current_mode:
+            if self.current_mode == 1:
+                self.encoder.set(25, min_val=1, max_val=50, incr=1, range_mode=Encoder.RANGE_BOUNDED)
+                self.max_speed = 1
+                self.min_speed = 50
+            elif self.current_mode == 2 or self.current_mode == 3:
+                self.encoder.set(120, min_val=50, max_val=200, incr=10, range_mode=Encoder.RANGE_BOUNDED)
+                self.max_speed = 50
+                self.min_speed = 200
+            self.last_update = self.current_mode
+        self.speed = self.max_speed + self.min_speed - self.encoder.value()
 
-    def get_speed(self):
+    def get_brightness(self):
         pot_value = self.adc.read_u16()
-        if self.current_mode == 1:  # Радуга
-            return 50 - int((pot_value / 65535) * 49)
-        return 200 - int((pot_value / 65535) * 150)
+        return 0.1 + (pot_value / 65535) * 0.9
 
-    def mode_off(self):
-        for i in range(self.n):
-            self.np[i] = (0, 0, 0)
-        self.np.write()
+    def apply_brightness(self, color):
+        bright = self.get_brightness()
+        return tuple(int(c * bright) for c in color)
 
     def mode_solid(self):
         color = self.apply_brightness(self.current_color)
@@ -60,6 +72,7 @@ class ModeManager:
         self.np.write()
 
     def mode_rainbow(self):
+        self.update_speed()
         for i in range(self.n):
             pos = ((i * 256 // self.n) + self.rainbow_offset) % 256
             if pos < 85:
@@ -73,13 +86,13 @@ class ModeManager:
             self.np[i] = self.apply_brightness((r, g, b))
         self.np.write()
         self.rainbow_offset = (self.rainbow_offset + 1) % 256
+        sleep(self.speed / 1000)
 
     def mode_comet(self):
+        self.update_speed()
         color = self.apply_brightness(self.current_color)
         tail = 2
-        speed = self.get_speed()
-        tick = (ticks_ms() // speed) % (self.n * 2 - 2)
-
+        tick = (ticks_ms() // self.speed) % (self.n * 2 - 2)
         head = tick if tick < self.n else (self.n * 2 - 2) - tick
         self.comet_direction = 1 if tick < self.n else -1
 
@@ -95,10 +108,16 @@ class ModeManager:
         self.np.write()
 
     def mode_blink(self):
+        self.update_speed()
         color = self.apply_brightness(self.current_color)
-        blink_state = (ticks_ms() // (self.get_speed() * 5)) % 2
+        blink_state = (ticks_ms() // (self.speed * 5)) % 2
         for i in range(self.n):
             self.np[i] = color if blink_state else (0, 0, 0)
+        self.np.write()
+
+    def mode_off(self):
+        for i in range(self.n):
+            self.np[i] = (0, 0, 0)
         self.np.write()
 
     def run_current_mode(self):
@@ -121,8 +140,10 @@ class NeoPixelTester(Tester):
                 self.btn_color = module.getPin(Pin.IN)
             if module.name == Module.SWITCH:
                 self.switch = module.getPin(Pin.IN)
+            if module.name == Module.ENCODER:
+                self.encoder = Encoder(module.getSlot())
         self.np = self.led_tower
-        self.manager = ModeManager(self.np, self.adc, 8)
+        self.manager = ModeManager(self.np, self.adc, self.encoder, 8)
 
         self.last_button_press = 0
         self.debounce = 200
@@ -136,20 +157,20 @@ class NeoPixelTester(Tester):
 
         if self.btn_prev.value() == 1:
             self.manager.current_mode = (self.manager.current_mode - 1) % len(self.manager.modes)
-            print("Режим:", self.manager.modes[self.manager.current_mode][0])
+            print("Mode:", self.manager.modes[self.manager.current_mode][0])
             self.last_button_press = ticks_ms()
             # while self.btn_prev.value() == 1: sleep(0.001)
 
         if self.btn_next.value() == 1:
             self.manager.current_mode = (self.manager.current_mode + 1) % len(self.manager.modes)
-            print("Режим:", self.manager.modes[self.manager.current_mode][0])
+            print("Mode:", self.manager.modes[self.manager.current_mode][0])
             self.last_button_press = ticks_ms()
             # while self.btn_next.value() == 1: sleep(0.001)
 
         if self.btn_color.value() == 1:
             idx = self.manager.colors.index(self.manager.current_color)
             self.manager.current_color = self.manager.colors[(idx + 1) % len(self.manager.colors)]
-            print("Цвет изменен на:", self.manager.current_color)
+            print("Color changed to:", self.manager.current_color)
             self.last_button_press = ticks_ms()
             # while self.btn_color.value() == 1: sleep(0.001)
 
@@ -161,4 +182,3 @@ class NeoPixelTester(Tester):
             return
         self.manager.run_current_mode()
         sleep(0.005)
-

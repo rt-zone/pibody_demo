@@ -17,9 +17,9 @@ hinter = Hinter(tft)
 testers = [
     GyroPongTester(),
     ColorTester(),
-    ClimateTester(),
+    DimmingTester(),
     NeoPixelTester(),
-    DimmingTester()
+    ClimateTester()
 ]
 
 selected_tester = testers[0]  # Default to the first tester
