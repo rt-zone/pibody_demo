@@ -22,8 +22,8 @@ testers = [
     NeoPixelTester(),
     # ColorTester(),
     # ClimateTester(),
+    AnyMeterTester(),
     JoystickTester(),
-    AnyMeterTester()
 ]
 
 selected_tester = testers[0]  # Default to the first tester
