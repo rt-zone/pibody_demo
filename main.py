@@ -1,11 +1,12 @@
 from tft_config import config
 from hinter import Hinter
-from Projects.climate_tester import ClimateTester
+# from Projects.climate_tester import ClimateTester
 from Projects.rgb_tester import NeoPixelTester
 from Projects.dimming_tester import DimmingTester
 from Projects.gyropong_tester import GyroPongTester
-from Projects.color_tester import ColorTester
+# from Projects.color_tester import ColorTester
 from Projects.joystick_tester import JoystickTester
+from Projects.any_meter_tester import AnyMeterTester
 from tester import Tester
 from machine import Pin
 start_button = Pin(20, Pin.IN) 
@@ -19,9 +20,10 @@ testers = [
     GyroPongTester(),
     DimmingTester(),
     NeoPixelTester(),
-    ColorTester(),
-    ClimateTester(),
-    JoystickTester()
+    # ColorTester(),
+    # ClimateTester(),
+    JoystickTester(),
+    AnyMeterTester()
 ]
 
 selected_tester = testers[0]  # Default to the first tester

@@ -1,4 +1,4 @@
-from machine import I2C, Pin
+from machine import I2C, Pin, SoftI2C
 import time
 # BME280 default address.
 BME280_I2CADDR = 0x76
@@ -58,7 +58,7 @@ _SLOT_MAP = {
 _BME280_ADDR = 0x76
 
 class Climate:
-    def __init__(self, slot, mode=BME280_OSAMPLE_1):
+    def __init__(self, slot, mode=BME280_OSAMPLE_1, soft=False):
         if mode not in [BME280_OSAMPLE_1, BME280_OSAMPLE_2, BME280_OSAMPLE_4, BME280_OSAMPLE_8, BME280_OSAMPLE_16]:
             raise ValueError(
                 'Unexpected mode value {0}. Set mode to one of '
@@ -70,7 +70,10 @@ class Climate:
         if slot not in _SLOT_MAP:
             raise ValueError(f"Invalid slot '{slot}'. Use A, B, D, E, or F (C is not I2C-compatible)")
         bus, sda_pin, scl_pin = _SLOT_MAP[slot]
-        self._i2c = I2C(bus, scl=Pin(scl_pin), sda=Pin(sda_pin))
+        if soft:
+            self._i2c = SoftI2C(scl=Pin(scl_pin), sda=Pin(sda_pin))
+        else:
+            self._i2c = I2C(bus, scl=Pin(scl_pin), sda=Pin(sda_pin))
         self._address = _BME280_ADDR
         time.sleep_ms(200)
         if self._address not in self._i2c.scan():

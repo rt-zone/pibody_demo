@@ -1,4 +1,4 @@
-from machine import I2C, Pin
+from machine import I2C, Pin, SoftI2C
 from math import sqrt
 from utime import sleep_ms
 # Registers
@@ -49,15 +49,17 @@ _SLOT_MAP = {
 
 class ColorSensor(object):
     
-    def __init__(self, slot, freq=400000):
+    def __init__(self, slot, freq=400000, soft=False):
         slot = slot.upper()
         if slot not in _SLOT_MAP:
             raise ValueError(f"Invalid slot '{slot}'. Use A, B, D, E, or F (C is not I2C-compatible)")
         bus, sda_pin, scl_pin = _SLOT_MAP[slot]
 
         try:
-            self.i2c = I2C(bus, freq=freq, sda=Pin(sda_pin), scl=Pin(scl_pin))
-            #
+            if soft:
+                self.i2c = SoftI2C(scl=Pin(scl_pin), sda=Pin(sda_pin))
+            else:
+                self.i2c = I2C(bus, scl=Pin(scl_pin), sda=Pin(sda_pin))
             self.addr = 0x10
             self.i2c.writeto(self.addr, _CONF + _SHUTDOWN)
             self.i2c.writeto(self.addr, _CONF + _DEFAULT_SETTINGS)

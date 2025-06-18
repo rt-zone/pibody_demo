@@ -1,4 +1,4 @@
-from machine import I2C, Pin
+from machine import I2C, Pin, SoftI2C
 import utime
 
 _SLOT_MAP = {
@@ -12,13 +12,16 @@ _SLOT_MAP = {
 }
 
 class Distance:
-    def __init__(self, slot='A', address=0x29, ):
+    def __init__(self, slot='A', address=0x29, soft=False):
         slot = slot.upper()
         if slot not in _SLOT_MAP:
             raise ValueError(f"Invalid slot '{slot}'. Use A, B, D, E, or F (C is not I2C-compatible)")
         bus, sda_pin, scl_pin = _SLOT_MAP[slot]
 
-        self.i2c = I2C(bus, scl=Pin(scl_pin), sda=Pin(sda_pin))
+        if soft:
+            self.i2c = SoftI2C(scl=Pin(scl_pin), sda=Pin(sda_pin))
+        else:
+            self.i2c = I2C(bus, scl=Pin(scl_pin), sda=Pin(sda_pin))
         self.address = address
         self._started = False
         self._on_close = None
