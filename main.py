@@ -5,6 +5,7 @@ from Projects.rgb_tester import NeoPixelTester
 from Projects.dimming_tester import DimmingTester
 from Projects.gyropong_tester import GyroPongTester
 from Projects.color_tester import ColorTester
+from Projects.joystick_tester import JoystickTester
 from tester import Tester
 from machine import Pin
 start_button = Pin(20, Pin.IN) 
@@ -16,10 +17,11 @@ hinter = Hinter(tft)
 
 testers = [
     GyroPongTester(),
-    ColorTester(),
     DimmingTester(),
     NeoPixelTester(),
-    ClimateTester()
+    ColorTester(),
+    ClimateTester(),
+    JoystickTester()
 ]
 
 selected_tester = testers[0]  # Default to the first tester
