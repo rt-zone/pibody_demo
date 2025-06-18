@@ -27,6 +27,7 @@ Modes = [
 ]
 
 ###--- Climate Sensor Tester ---###
+### If we want we can add humidity and pressure
 temp_min = 20
 temp_max = 30
 color_temp_min = (255, 255, 0)
@@ -179,13 +180,3 @@ class AnyMeterTester(Tester):
         if self.mode == 3:
             data = self.climate_sensor.read()
             climatesensor_mode(self.led_tower, data["temperature"])
-
-while True:
-    try:
-        tester = AnyMeterTester()
-        tester.init()
-        while True:
-            tester.loop()
-    except Exception as e:
-        print("error:", e)
-        time.sleep(1)
