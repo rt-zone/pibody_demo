@@ -1,9 +1,9 @@
 from machine import Pin, ADC
 from time import sleep, ticks_ms
-from pibody import EncoderSensor, LEDTower
-from module import Module 
-from projectConfig import ProjectConfig
-from tester import Tester
+from pibody import EncoderSensor
+from Tester.module import Module 
+from Tester.projectConfig import ProjectConfig
+from Tester.tester import Tester
 
 project_config = ProjectConfig(
     title="RGB Tester",

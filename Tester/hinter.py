@@ -1,6 +1,6 @@
 from pibody import Display
-from module import Module
-from projectConfig import ProjectConfig
+from Tester.module import Module
+from Tester.projectConfig import ProjectConfig
 
 SLOTS_COORDS = {
     "A": (10, 0),

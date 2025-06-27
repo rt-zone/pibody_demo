@@ -1,6 +1,6 @@
-from tester import Tester
-from module import Module
-from projectConfig import ProjectConfig
+from Tester.tester import Tester
+from Tester.module import Module
+from Tester.projectConfig import ProjectConfig
 import math
 
 project_config = ProjectConfig(

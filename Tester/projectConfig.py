@@ -1,4 +1,4 @@
-from module import Module
+from Tester.module import Module
 
 class ProjectConfig():
     def __init__(self, title, modules: list[Module], led_tower=False, servo8=False, servo9=False):

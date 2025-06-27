@@ -1,4 +1,4 @@
-from projectConfig import ProjectConfig
+from Tester.projectConfig import ProjectConfig
 from pibody import LEDTower
 from machine import PWM, Pin
 import gc

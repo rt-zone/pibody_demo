@@ -1,8 +1,8 @@
 from machine import Pin
 import time
-from tester import Tester
-from projectConfig import ProjectConfig
-from module import Module
+from Tester.tester import Tester
+from Tester.projectConfig import ProjectConfig
+from Tester.module import Module
 
 project_config = ProjectConfig(
     title="Dimming System",

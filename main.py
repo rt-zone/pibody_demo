@@ -1,4 +1,4 @@
-from demo import Demo
+from Tester.demo import Demo
 
 demo = Demo()
 demo.run()

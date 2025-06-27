@@ -1,8 +1,8 @@
 from machine import Pin
 from pibody import GyroAxelSensor
-from tester import Tester
-from module import Module
-from projectConfig import ProjectConfig
+from Tester.tester import Tester
+from Tester.module import Module
+from Tester.projectConfig import ProjectConfig
 import time
 
 project_config = ProjectConfig(
