@@ -1,8 +1,6 @@
-import vga2_bold_16x32 as font
-import vga2_8x16 as font_small
-import st7789
+from pibody import Display
 from module import Module
-from projectConfig import ProrjectConfig
+from projectConfig import ProjectConfig
 
 SLOTS_COORDS = {
     "A": (10, 0),
@@ -14,25 +12,25 @@ SLOTS_COORDS = {
 }
     
 class Hinter():
-    def __init__(self, tft: st7789.ST7789):
-        self.tft = tft
+    def __init__(self):
+        self.display = Display()
         self.clear()
 
     def tester_is_running(self, tester_name):
         self.clear()
-        text_color = st7789.color565(120, 255, 50)  # Green color
-        self.tft.text(font, f"{tester_name}", 10, 120, text_color, st7789.BLACK)
-        self.tft.text(font, "is running", 10, 150, text_color, st7789.BLACK)
+        text_color = self.display.color(120, 255, 50)  # Green color
+        self.display.text(f"{tester_name}", 10, 120, self.display.font_bold, text_color, self.display.BLACK)
+        self.display.text("is running", 10, 150, self.display.font_bold, text_color, self.display.BLACK)
 
     def clear(self):
-        self.tft.fill(st7789.BLACK)
+        self.display.fill(self.display.BLACK)
 
     def drawModule(self, module :Module, slot):
         x, y = SLOTS_COORDS[slot]
-        self.tft.rect(x, y, 110, 110, st7789.BLACK)
-        self.tft.png(module.getPngPath(), x, y)
+        self.display.rect(x, y, 110, 110, self.display.BLACK)
+        self.display.png(module.getPngPath(), x, y)
 
-    def drawModules(self, config: ProrjectConfig):
+    def drawModules(self, config: ProjectConfig):
         title = config.getTitle()
         led_tower = config.getLedTower()
         servo8 = config.getServo8()
@@ -40,7 +38,7 @@ class Hinter():
         modules = config.getModules()
 
 
-        self.tft.fill(st7789.BLACK)  # Clear the screen
+        self.display.fill(self.display.BLACK)  # Clear the screen
         for module in modules:
             slot = module.getSlot()
 
@@ -49,20 +47,20 @@ class Hinter():
             else:
                 print(f"Invalid slot: {slot}")
 
-        self.tft.text(font, title, 10, 280, st7789.WHITE, st7789.BLACK)
+        self.display.text(title, 10, 280, self.display.font_bold, self.display.WHITE, self.display.BLACK)
         if led_tower:
-            self.tft.png("module_pngs/led_tower.png", 110, 0)
+            self.display.png("module_pngs/led_tower.png", 110, 0)
         if servo8 or servo9:
-            self.tft.png("module_pngs/servo.png", 90, 200)
+            self.display.png("module_pngs/servo.png", 90, 200)
             txt = "8" if servo8 else ""
             txt += "/" if servo8 and servo9 else ""
             txt += "9" if servo9 else ""
-            self.tft.text(font_small, txt, 110, 250, st7789.WHITE, st7789.BLACK)
+            self.display.text(font=self.display.font_small, text=txt, x=110, y=250, fg=self.display.WHITE, bg=self.display.BLACK)
 
     def show_error(self, message):
         self.clear()
-        text_color = st7789.color565(120, 100, 20)
+        text_color = self.display.color(120, 100, 20)
         
         lines = [message[i:i+28] for i in range(0, len(message), 28)]
         for i, line in enumerate(lines):
-            self.tft.text(font_small, line, 10, 20 + i * 20, text_color, st7789.BLACK)
+            self.display.text(font=self.display.font_small, text=line, x=10, y=20 + i * 20, fg=text_color, bg=self.display.BLACK)

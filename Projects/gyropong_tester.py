@@ -1,11 +1,11 @@
 from machine import Pin
-from libs.gyroaxel import GyroAxel
+from pibody import GyroAxelSensor
 from tester import Tester
 from module import Module
-from projectConfig import ProrjectConfig
+from projectConfig import ProjectConfig
 import time
 
-project_config = ProrjectConfig(
+project_config = ProjectConfig(
     title = "GyroPong",
     modules=[
         Module(Module.LED_R, "A"),
@@ -61,7 +61,7 @@ class GyroPongTester(Tester):
                 self.buzzer = module.getPWM()
                 self.buzzer.freq(440)
             if module.name == Module.GYRO:
-                self.gyro = GyroAxel(module.getSlot())
+                self.gyro = GyroAxelSensor(module.getSlot())
         self.leds = [self.led_r, self.led_y, self.led_g]
 
     def loop(self):

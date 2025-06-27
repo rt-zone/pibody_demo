@@ -1,10 +1,10 @@
 from machine import Pin
 import time
 from tester import Tester
-from projectConfig import ProrjectConfig
+from projectConfig import ProjectConfig
 from module import Module
 
-project_config = ProrjectConfig(
+project_config = ProjectConfig(
     title="Dimming System",
     modules=[
         Module(Module.LED_R, "A"),
@@ -13,7 +13,7 @@ project_config = ProrjectConfig(
     ]
 )
 
-light_treshold = 35000  # максимальное значение для светодиода
+light_treshold = 37500  # максимальное значение для светодиода
 dim_brightness = 2500   # начальная яркость светодиода
 full_brightness = 35000 # максимальная яркость светодиода
 
@@ -53,7 +53,7 @@ class DimmingTester(Tester):
             return
         if motion_value == 1:
             fade_to(full_brightness, self.led)
-            time.sleep(5) 
+            time.sleep(2.5) 
         else:
             fade_to(dim_brightness, self.led)
 

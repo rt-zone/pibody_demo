@@ -1,9 +1,9 @@
 from tester import Tester
 from module import Module
-from projectConfig import ProrjectConfig
+from projectConfig import ProjectConfig
 import math
 
-project_config = ProrjectConfig(
+project_config = ProjectConfig(
     title="Joystick Tester",
     modules=[
         Module(Module.JOYSTICK, "F")

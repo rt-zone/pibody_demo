@@ -1,13 +1,12 @@
-from projectConfig import ProrjectConfig
-from neopixel import NeoPixel
-from machine import PWM, Pin, ADC
-from module import Module
+from projectConfig import ProjectConfig
+from pibody import LEDTower
+from machine import PWM, Pin
 import gc
 
 isRunning = False
 
 class Tester():
-    def __init__(self, project_config: ProrjectConfig):
+    def __init__(self, project_config: ProjectConfig):
         self.config = project_config
         self.name = project_config.getTitle()
 
@@ -22,7 +21,7 @@ class Tester():
         self.modules = config.getModules()
 
         if config.getLedTower():
-            self.led_tower = NeoPixel(Pin(8), 8)
+            self.led_tower = LEDTower()
 
         if config.getServo8():
             self.servo = PWM(Pin(8))

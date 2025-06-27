@@ -1,6 +1,6 @@
 from module import Module
 
-class ProrjectConfig():
+class ProjectConfig():
     def __init__(self, title, modules: list[Module], led_tower=False, servo8=False, servo9=False):
         self.title = title
         self.led_tower = led_tower

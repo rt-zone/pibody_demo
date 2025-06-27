@@ -1,11 +1,11 @@
 from machine import Pin, ADC
 from time import sleep, ticks_ms
-from libs.encoder_updated import Encoder
+from pibody import EncoderSensor, LEDTower
 from module import Module 
-from projectConfig import ProrjectConfig
+from projectConfig import ProjectConfig
 from tester import Tester
 
-project_config = ProrjectConfig(
+project_config = ProjectConfig(
     title="RGB Tester",
     modules=[
         Module(Module.BUTTON_BLUE, "A"),
@@ -47,11 +47,11 @@ class ModeManager:
     def update_speed(self):
         if self.last_update != self.current_mode:
             if self.current_mode == 1:
-                self.encoder.set(25, min_val=1, max_val=50, incr=1, range_mode=Encoder.RANGE_BOUNDED)
+                self.encoder.set(25, min_val=1, max_val=50, incr=1, range_mode=EncoderSensor.RANGE_BOUNDED)
                 self.max_speed = 1
                 self.min_speed = 50
             elif self.current_mode == 2 or self.current_mode == 3:
-                self.encoder.set(120, min_val=50, max_val=200, incr=10, range_mode=Encoder.RANGE_BOUNDED)
+                self.encoder.set(120, min_val=50, max_val=200, incr=10, range_mode=EncoderSensor.RANGE_BOUNDED)
                 self.max_speed = 50
                 self.min_speed = 200
             self.last_update = self.current_mode
@@ -141,7 +141,7 @@ class NeoPixelTester(Tester):
             if module.name == Module.SWITCH:
                 self.switch = module.getPin(Pin.IN)
             if module.name == Module.ENCODER:
-                self.encoder = Encoder(module.getSlot())
+                self.encoder = EncoderSensor(module.getSlot())
         self.np = self.led_tower
         self.manager = ModeManager(self.np, self.adc, self.encoder, 8)
 

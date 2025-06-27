@@ -1,13 +1,11 @@
 from module import Module
 from tester import Tester
-from projectConfig import ProrjectConfig
+from projectConfig import ProjectConfig
 from machine import Pin
-from libs.climate import Climate
-from libs.colorsensor import ColorSensor
-from libs.distance import Distance
+from pibody import ClimateSensor, ColorSensor, DistanceSensor
 import time
 
-project_config = ProrjectConfig(
+project_config = ProjectConfig(
     title="Any Meter",
     modules=[
         Module(Module.TOUCH_SENSOR, 'D'),
@@ -147,11 +145,11 @@ class AnyMeterTester(Tester):
             if module.name == Module.TOUCH_SENSOR:
                 self.touch = module.getPin(Pin.IN)
             if module.name == Module.DISTANCE_SENSOR:
-                self.distance_sensor = Distance(module.getSlot(), soft=True)
+                self.distance_sensor = DistanceSensor(module.getSlot(), soft_i2c=True)
             if module.name == Module.CLIMATE_SENSOR:
-                self.climate_sensor = Climate(module.getSlot())
+                self.climate_sensor = ClimateSensor(module.getSlot(), soft_i2c=True)
             if module.name == Module.COLOR_SENSOR:
-               self.color_sensor = ColorSensor(module.getSlot(), soft=True)
+               self.color_sensor = ColorSensor(module.getSlot(), soft_i2c=True)
         self.mode = 0
         self.last_touch = 0
         
