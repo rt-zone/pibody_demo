@@ -4,20 +4,6 @@ import vga2_8x16 as font_small
 import vga2_bold_16x32 as font
 import math
 
-color_map = {
-    "black": st7789.BLACK,
-    "blue": st7789.BLUE,
-    "red": st7789.RED,
-    "green": st7789.GREEN,
-    "cyan": st7789.CYAN,
-    "magenta": st7789.MAGENTA,
-    "yellow": st7789.YELLOW,
-    "white": st7789.WHITE,
-}
-
-# BLACK, BLUE, RED, GREEN, CYAN, MAGENTA, YELLOW, and WHITE
-# 0x0000, 0x001F, 0xF800, 0x07E0, 0x001F, 0xF800, 0xFFE0, 0xFFFF
-
 class DisplayPlus(st7789.ST7789):
     def __init__(self, rotation=2, options=0, buffer_size=0):
         super().__init__(SPI(1, baudrate=400_000_000, sck=Pin(10), mosi=Pin(11)),
@@ -31,8 +17,10 @@ class DisplayPlus(st7789.ST7789):
             buffer_size=buffer_size)
         self.display = self
         self.display.init()
+
         self.font_small = font_small
         self.font_bold = font
+        
         self.BLACK = st7789.BLACK
         self.BLUE = st7789.BLUE
         self.RED = st7789.RED
@@ -41,6 +29,13 @@ class DisplayPlus(st7789.ST7789):
         self.MAGENTA = st7789.MAGENTA
         self.YELLOW = st7789.YELLOW
         self.WHITE = st7789.WHITE
+        
+        self.y = 10
+        self.width = 240
+        self.height = 320
+        self.line_height = 16
+        self.max_lines = self.height // self.line_height
+        self.lines = []
     
     def text(self, text, x, y, font=None, fg=None, bg=None):
         if font is None:
@@ -62,8 +57,30 @@ class DisplayPlus(st7789.ST7789):
                 dy = center_y + r * math.sin(math.pi/180*i)
                 self.display.pixel(round(dx), round(dy), color)
 
+    def linear_bar(self, x, y, length, value, min_value, max_value, height=5, border=False, color=st7789.GREEN, border_color=st7789.WHITE, background_color=st7789.BLACK):
+        even = 1 - height % 2
+        n = int((height-1-even)/2)
+        
+        if border:
+            self.rect(x-1, y-n-1, length+3, height+2, border_color)
+            line_color = background_color
+        else:
+            for i in range(2):
+                self.vline(x-1-i, y-n, height, border_color)
+                self.vline(x + length + 1 + i, y-n, height, border_color)
+            line_color = border_color
 
-    def progress_bar(self, center_x, center_y, r, value, min_value, max_value, width=2, color=st7789.GREEN, background_color=st7789.WHITE):
+        value = min(max(value - min_value, 0), max_value - min_value) / (max_value - min_value)
+
+        for i in range(height):
+            self.line(x, y - n + i, x + math.floor(length * value), y - n + i, color)
+        for i in range(n):
+            self.line(x + math.floor(length * value), y - 1 - i, x + length - 1, y - 1 - i, background_color)
+            self.line(x + math.floor(length * value), y + 1 + even + i, x + length - 1, y + 1 + even + i, background_color)
+        self.line(x + math.floor(length * value), y, x + length, y, line_color)
+        self.line(x + math.floor(length * value), y + even, x + length, y + even, line_color)
+
+    def circular_bar(self, center_x, center_y, r, value, min_value, max_value, width=2, color=st7789.GREEN, background_color=st7789.WHITE):
         # Get angle from value
         angle = min(max(value - min_value, 0), max_value - min_value) / (max_value - min_value) * 360
         # Draw progress bar
@@ -104,3 +121,34 @@ class DisplayPlus(st7789.ST7789):
         self.text("Artisan", x - r, y + r, font=font, fg=st7789.BLACK, bg=st7789.WHITE)
         self.text("Education", x - r, y + r + 32, font=font, fg=st7789.BLACK, bg=st7789.WHITE)
         self.text("artisan.education", 100, 300, fg=st7789.BLACK, bg=st7789.WHITE)
+
+    def print(self, text, x=10, max_width=None, font_width=8):
+        if max_width is None:
+            max_width = self.width
+        text = "> " + str(text)
+        words = text.split(' ')
+        line = ''
+        for word in words:
+            if len(line + ' ' + word) * font_width > max_width and line:
+                self._add_line(line)
+                line = word
+            else:
+                if line:
+                    line += ' ' + word
+                else:
+                    line = word
+        if line:
+            self._add_line(line)
+        self._redraw(x)
+
+    def _add_line(self, line):
+        self.lines.append(line)
+        if len(self.lines) > self.max_lines:
+            self.lines.pop(0)  # Удаляем верхнюю строку
+
+    def _redraw(self, x):
+        self.display.fill(0)
+        y = 0
+        for line in self.lines:
+            self.display.text(line, x, y)
+            y += self.line_height
