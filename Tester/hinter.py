@@ -21,6 +21,8 @@ class Hinter():
         text_color = self.display.color(120, 255, 50)  # Green color
         self.display.text(f"{tester_name}", 10, 120, self.display.font_bold, text_color, self.display.BLACK)
         self.display.text("is running", 10, 150, self.display.font_bold, text_color, self.display.BLACK)
+        self.display.text("GP21", 204, 300, self.display.font_small, fg=self.display.CYAN)
+        self.display.text("cancel", 154, 300, self.display.font_small)
 
     def clear(self):
         self.display.fill(self.display.BLACK)
@@ -47,7 +49,11 @@ class Hinter():
             else:
                 print(f"Invalid slot: {slot}")
 
-        self.display.text(title, 10, 280, self.display.font_bold, self.display.WHITE, self.display.BLACK)
+        self.display.text(title, 10, 265, self.display.font_bold, self.display.WHITE, self.display.BLACK)
+        self.display.text("GP20", 10, 300, self.display.font_small, fg=self.display.CYAN)
+        self.display.text("select", 44, 300, self.display.font_small)
+        self.display.text("GP21", 204, 300, self.display.font_small, fg=self.display.CYAN)
+        self.display.text("next", 170, 300, self.display.font_small)
         if led_tower:
             self.display.png("module_pngs/led_tower.png", 110, 0)
         if servo8 or servo9:

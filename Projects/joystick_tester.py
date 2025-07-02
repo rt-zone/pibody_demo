@@ -7,7 +7,7 @@ import math
 hinter = Hinter()
 
 project_config = ProjectConfig(
-    title="Joystick Tester",
+    title="Joystick",
     modules=[
         Module(Module.JOYSTICK, "F")
     ],
