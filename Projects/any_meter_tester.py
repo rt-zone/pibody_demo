@@ -1,10 +1,13 @@
 from Tester.module import Module
 from Tester.tester import Tester
+from Tester.hinter import Hinter
 from Tester.projectConfig import ProjectConfig
 from machine import Pin
 from pibody import ClimateSensor, ColorSensor, DistanceSensor, Display
 import time
 import math
+
+hinter = Hinter()
 
 project_config = ProjectConfig(
     title="Any Meter",
@@ -25,7 +28,6 @@ Modes = [
     "Climate Sensor"
 ]
 
-display = Display()
 x = 10
 y = 32
 length = 200
@@ -78,8 +80,8 @@ def climatesensor_mode(np, data, data_max=temp_max, data_min=temp_min, color_dat
     show_value(np, val, data_min, data_max, color_data_min, color_data_max)
 
     color = get_color_by_temperature(data)
-    display.text("Temperature: " + str(data) + "C      ", x, y + 9)
-    display.linear_bar(x, y, length, value=val, min_value=data_min, max_value=data_max, height=height, border=True, color=display.color(*color))
+    hinter.display.text("Temperature: " + str(data) + "C      ", x, y + 9)
+    hinter.display.linear_bar(x, y, length, value=val, min_value=data_min, max_value=data_max, height=height, border=True, color=hinter.display.color(*color))
 ###--- Climate Sensor Tester ---###
 
 
@@ -92,7 +94,7 @@ def colorsensor_mode(np, color, leds_num=8):
         np[i] = (r, g, b)
     np.write()
 
-    display.linear_bar(x, y + 4, length, value=2, min_value=0, max_value=1, border=True, height=height + 8, color=display.color(r, g, b))
+    hinter.display.linear_bar(x, y + 4, length, value=2, min_value=0, max_value=1, border=True, height=height + 8, color=hinter.display.color(r, g, b))
 ###--- Color Sensor Tester ---###
 
 
@@ -108,7 +110,7 @@ def microphone_mode(np, mic_value, decay_rate=1000, leds_num=8):
         max_deviation -= decay_rate
     
     max_deviation = max(max_deviation, 0)
-    display.linear_bar(x, y, length, value=max_deviation, min_value=0, max_value=32768, border=True, height=height, color=display.YELLOW)
+    hinter.display.linear_bar(x, y, length, value=max_deviation, min_value=0, max_value=32768, border=True, height=height, color=hinter.display.YELLOW)
 
     fill_value = int(max_deviation / 32768 * leds_num) + 1
     fill_value = min(fill_value, leds_num) 
@@ -143,7 +145,7 @@ def display_bar(np, dist, leds_num=8, min_dist=min_dist, max_dist=max_dist):
     dist = max(min_dist, min(dist, max_dist))
     level = int((dist - min_dist) / (max_dist - min_dist) * leds_num)
     color = get_color_by_distance(dist)
-    display.linear_bar(x, y, length, value=dist, min_value=min_dist, max_value=max_dist, height=height, border=True, color=display.color(*color))
+    hinter.display.linear_bar(x, y, length, value=dist, min_value=min_dist, max_value=max_dist, height=height, border=True, color=hinter.display.color(*color))
     for i in range(leds_num):
         np[i] = color if i < level else (0, 0, 0)
     np.write()
@@ -151,10 +153,10 @@ def display_bar(np, dist, leds_num=8, min_dist=min_dist, max_dist=max_dist):
 def distance_mode(np, sensor, dist, leds_num=8):
     if sensor.is_valid(dist):
         display_bar(np, dist)
-        display.text("Distance: " + str(dist) + "/300 mm           ", x, y + 9)
+        hinter.display.text("Distance: " + str(dist) + "/300 mm           ", x, y + 9)
     else:
-        display.linear_bar(x, y, length, value=0, min_value=min_dist, max_value=max_dist, height=height, border=True, color=0)
-        display.text("Distance: Invalid value     ", x, y + 9)
+        hinter.display.linear_bar(x, y, length, value=0, min_value=min_dist, max_value=max_dist, height=height, border=True, color=0)
+        hinter.display.text("Distance: Invalid value     ", x, y + 9)
         for i in range(leds_num):
             np[i] = (0, 0, 0)
         np.write()
@@ -182,38 +184,41 @@ class AnyMeterTester(Tester):
         self.last_touch = 0
         
     def loop(self):
+        hinter.display.text("Press 'Touch'", 10, 284)
+        hinter.display.text("to change sensor", 10, 300)
+        
         if self.touch.value() == 1 and (time.ticks_ms() - self.last_touch) > 500:
             self.mode = (self.mode + 1) % len(Modes)
             self.last_touch = time.ticks_ms()
             print(f"Mode changed to: {Modes[self.mode]}")
-            display.fill_rect(x - 3, y - 9, x + length + 10, y + 35, 0)
-
-        if not self.isRunning:
-            display.fill(0)
-            return
+            hinter.display.fill_rect(x - 3, y - 9, x + length + 10, y + 35, 0)
+        
 
         # Color Sensor Tester
         elif self.mode == 0:
             color = self.color_sensor.readRGB()
             colorsensor_mode(self.led_tower, color)
-            display.text("Color Sensor is working   ", x, y - 22)
+            hinter.display.text("Color Sensor is working   ", x, y - 22)
 
         # Microphone Tester
         elif self.mode == 1:
             mic_value = self.microphone.read_u16()
             microphone_mode(self.led_tower, mic_value)
-            display.text("Microphone is working     ", x, y - 22)
+            hinter.display.text("Microphone is working     ", x, y - 22)
 
         # Distance Sensor Tester
         elif self.mode == 2:
             distance = self.distance_sensor.read()
             distance_mode(self.led_tower, self.distance_sensor, distance)
-            display.text("Distance Sensor is working", x, y - 22)
+            hinter.display.text("Distance Sensor is working", x, y - 22)
         
         # Climate Sensor Tester
         elif self.mode == 3:
             data = self.climate_sensor.read()
             climatesensor_mode(self.led_tower, data["temperature"])
-            display.text("Climate Sensor is working ", x, y - 22)
+            hinter.display.text("Climate Sensor is working ", x, y - 22)
 
+        if not self.isRunning:
+            hinter.drawModules(project_config)
+            return
 

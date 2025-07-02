@@ -1,8 +1,11 @@
 from machine import Pin
 import time
+from Tester.hinter import Hinter
 from Tester.tester import Tester
 from Tester.projectConfig import ProjectConfig
 from Tester.module import Module
+
+hinter = Hinter()
 
 project_config = ProjectConfig(
     title="Dimming System",
@@ -17,7 +20,13 @@ light_treshold = 37500  # максимальное значение для св�
 dim_brightness = 2500   # начальная яркость светодиода
 full_brightness = 35000 # максимальная яркость светодиода
 
-def fade_to(brightness, led, step=1000, delay=0.02):
+x = 10
+y = 32
+length = 200
+height = 9
+border = True
+
+def fade_to(brightness, led, step=1000, delay=0.01):
     current = led.duty_u16()
     if brightness > current:
         for i in range(current, brightness, step):
@@ -32,6 +41,7 @@ def fade_to(brightness, led, step=1000, delay=0.02):
 class DimmingTester(Tester):
     def __init__(self):
         super().__init__(project_config)
+        self.color = hinter.display.color(0, 0, 0)
 
     def init(self):
         super().init()
@@ -48,13 +58,21 @@ class DimmingTester(Tester):
         light_value = self.light.read_u16()
         motion_value = self.motion.value()
 
+        hinter.display.text("Light Sensor is working   ", x, y - 22)
+        hinter.display.text("Light value: " + str(65535 - light_value) + "/28035          ", x, y + 9)
+        hinter.display.linear_bar(x, y, length, value=65535 - light_value, min_value=0, max_value=65535, height=height, border=True, color=self.color)
+
         if light_value > light_treshold:
+            self.color = hinter.display.color(64, 64, 64)
             fade_to(0, self.led)
             return
         if motion_value == 1:
+            self.color = hinter.display.color(255, 255, 0)
             fade_to(full_brightness, self.led)
-            time.sleep(2.5) 
         else:
+            self.color = hinter.display.color(88, 88, 0)
             fade_to(dim_brightness, self.led)
 
-    time.sleep(0.2)
+        if not self.isRunning:
+            hinter.drawModules(project_config)
+            return

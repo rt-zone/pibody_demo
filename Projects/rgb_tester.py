@@ -4,6 +4,9 @@ from pibody import EncoderSensor
 from Tester.module import Module 
 from Tester.projectConfig import ProjectConfig
 from Tester.tester import Tester
+from Tester.hinter import Hinter
+
+hinter = Hinter()
 
 project_config = ProjectConfig(
     title="RGB Tester",
@@ -182,3 +185,7 @@ class NeoPixelTester(Tester):
             return
         self.manager.run_current_mode()
         sleep(0.005)
+
+        if not self.isRunning:
+            hinter.drawModules(project_config)
+            return

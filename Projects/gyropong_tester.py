@@ -3,7 +3,10 @@ from pibody import GyroAxelSensor
 from Tester.tester import Tester
 from Tester.module import Module
 from Tester.projectConfig import ProjectConfig
+from Tester.hinter import Hinter
 import time
+
+hinter = Hinter()
 
 project_config = ProjectConfig(
     title = "GyroPong",
@@ -20,6 +23,20 @@ treshold = 0.5
 led_index = 0
 last_index = 0
 last_time = 0
+
+red_color = hinter.display.color(255, 0, 0)
+yellow_color = hinter.display.color(255, 255, 0)
+green_color = hinter.display.color(0, 255, 0)
+dim_red_color = hinter.display.color(100, 0, 0)
+dim_yellow_color = hinter.display.color(100, 100, 0)
+dim_green_color = hinter.display.color(0, 100, 0)
+color_map = [red_color, yellow_color, green_color]
+dim_color_map = [dim_red_color, dim_yellow_color, dim_green_color]
+
+x = 20
+y = 30
+r = 10
+
 freq_map = {
     0: 440,  # A4  
     1: 330,  # E4
@@ -41,8 +58,10 @@ def update_leds(leds, index):
     for i in range(len(leds)):
         if i == index:
             leds[i].on()
+            hinter.display.fill_circle(x, y + i * 22, r, color_map[i])
         else:
             leds[i].off()
+            hinter.display.fill_circle(x, y + i * 22, r, dim_color_map[i])
 
 class GyroPongTester(Tester):
     def __init__(self):
@@ -86,3 +105,7 @@ class GyroPongTester(Tester):
 
         update_leds(self.leds, led_index)
         time.sleep(0.1)
+
+        if not self.isRunning:
+            hinter.drawModules(project_config)
+            return

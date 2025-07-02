@@ -32,7 +32,7 @@ class Demo():
         
     def cancel_handler(self, pin):
         self.selected_tester.cancel_handler(pin)
-        self.hinter.drawModules(self.selected_tester.config)
+        # self.hinter.drawModules(self.selected_tester.config)
         pin.irq(handler=None)  # Disable the cancel handler
 
     def start_selected_tester(self):
@@ -59,4 +59,3 @@ class Demo():
                 except Exception as e:
                     print(f"Error starting tester: {e}")
                     self.hinter.show_error(str(e))
-

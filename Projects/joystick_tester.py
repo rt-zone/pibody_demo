@@ -1,7 +1,10 @@
 from Tester.tester import Tester
 from Tester.module import Module
+from Tester.hinter import Hinter
 from Tester.projectConfig import ProjectConfig
 import math
+
+hinter = Hinter()
 
 project_config = ProjectConfig(
     title="Joystick Tester",
@@ -43,4 +46,8 @@ class JoystickTester(Tester):
 
         self.servo.duty_u16(angle_to_duty(angle0))
         self.servo9.duty_u16(angle_to_duty(angle1))
+
+        if not self.isRunning:
+            hinter.drawModules(project_config)
+            return
 
