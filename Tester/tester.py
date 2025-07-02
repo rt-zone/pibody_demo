@@ -3,12 +3,12 @@ from pibody import LEDTower
 from machine import PWM, Pin
 import gc
 
-isRunning = False
 
 class Tester():
     def __init__(self, project_config: ProjectConfig):
         self.config = project_config
         self.name = project_config.getTitle()
+        self.isRunning = False
 
     def loop(self):
         pass
@@ -32,9 +32,8 @@ class Tester():
     def start(self):
         self.init()
         print(f"Starting tester: {self.name}")
-        global isRunning
-        isRunning = True
-        while isRunning:
+        self.isRunning = True
+        while self.isRunning:
             self.loop()
 
     def stop(self):
@@ -44,10 +43,8 @@ class Tester():
 
         gc.collect()
 
-            
     def cancel_handler(self, pin):
-        global isRunning
-        if not isRunning:
+        if not self.isRunning:
             return
-        isRunning = False
+        self.isRunning = False
         print("Test cancelled")
