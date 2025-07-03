@@ -44,7 +44,7 @@ class Demo():
             print("No tester selected")
         
     def run(self):
-        self.hinter.display.draw_logo()
+        self.hinter.display.draw_logo(y=90)
         self.hinter.display.fill_rect(100, 300, 140, 20, self.hinter.display.WHITE)
         self.hinter.display.fill_polygon(
             [(10, 285) ,(10, 310), (35, 310), (27, 302), (43, 286), (34, 277), (18, 293), (10, 285)],
@@ -52,8 +52,16 @@ class Demo():
             0,
             self.hinter.display.BLACK
         )
-        self.hinter.display.text("GP20", 45, 282, font=self.hinter.display.font_bold, fg=self.hinter.display.BLACK, bg=self.hinter.display.WHITE)
-        self.hinter.display.text("GP21", 131, 282, font=self.hinter.display.font_bold, fg=self.hinter.display.BLACK, bg=self.hinter.display.WHITE)
+
+        self.hinter.display.text("start", 10, 261, fg=self.hinter.display.BLACK, bg=self.hinter.display.WHITE)
+        self.hinter.display.text("next", 198, 261, fg=self.hinter.display.BLACK, bg=self.hinter.display.WHITE)
+
+        self.hinter.display.text("Press any button", 56, 290, fg=self.hinter.display.BLACK, bg=self.hinter.display.WHITE)
+        self.hinter.display.hline(55, 306, 129, self.hinter.display.BLACK)
+        # self.hinter.display.text("GP20", 45, 282, font=self.hinter.display.font_bold, fg=self.hinter.display.BLACK, bg=self.hinter.display.WHITE)
+        # self.hinter.display.text("start", 48, 270, fg=self.hinter.display.BLACK, bg=self.hinter.display.WHITE)
+        # self.hinter.display.text("GP21", 131, 282, font=self.hinter.display.font_bold, fg=self.hinter.display.BLACK, bg=self.hinter.display.WHITE)
+        # self.hinter.display.text("next", 157, 270, fg=self.hinter.display.BLACK, bg=self.hinter.display.WHITE)
         self.hinter.display.fill_polygon(
             [(10, 285) ,(10, 310), (35, 310), (27, 302), (43, 286), (34, 277), (18, 293), (10, 285)],
             -80,
