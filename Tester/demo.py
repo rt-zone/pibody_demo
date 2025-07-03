@@ -45,6 +45,22 @@ class Demo():
         
     def run(self):
         self.hinter.display.draw_logo()
+        self.hinter.display.fill_rect(100, 300, 140, 20, self.hinter.display.WHITE)
+        self.hinter.display.fill_polygon(
+            [(10, 285) ,(10, 310), (35, 310), (27, 302), (43, 286), (34, 277), (18, 293), (10, 285)],
+            0,
+            0,
+            self.hinter.display.BLACK
+        )
+        self.hinter.display.text("GP20", 45, 282, font=self.hinter.display.font_bold, fg=self.hinter.display.BLACK, bg=self.hinter.display.WHITE)
+        self.hinter.display.text("GP21", 131, 282, font=self.hinter.display.font_bold, fg=self.hinter.display.BLACK, bg=self.hinter.display.WHITE)
+        self.hinter.display.fill_polygon(
+            [(10, 285) ,(10, 310), (35, 310), (27, 302), (43, 286), (34, 277), (18, 293), (10, 285)],
+            -80,
+            320,
+            self.hinter.display.BLACK,
+            4.71238898038,
+        )
         while select_button.value() == 0 and start_button.value() == 0:
             pass
         self.select_tester(self.selected_tester)

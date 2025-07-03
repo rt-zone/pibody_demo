@@ -70,3 +70,8 @@ class Hinter():
         lines = [message[i:i+28] for i in range(0, len(message), 28)]
         for i, line in enumerate(lines):
             self.display.text(font=self.display.font_small, text=line, x=10, y=20 + i * 20, fg=text_color, bg=self.display.BLACK)
+        self.display.text("GP20", 10, 300, self.display.font_small, fg=self.display.CYAN)
+        self.display.text("select", 44, 300, self.display.font_small)
+        self.display.text("GP21", 204, 300, self.display.font_small, fg=self.display.CYAN)
+        self.display.text("next", 170, 300, self.display.font_small)
+        
