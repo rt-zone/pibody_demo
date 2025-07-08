@@ -1,5 +1,5 @@
 from machine import Pin, I2C, SoftI2C, PWM, ADC
-png_path = "module_pngs/"
+png_path = "Demo/module_pngs/"
 
 
 SLOT_MAP = {

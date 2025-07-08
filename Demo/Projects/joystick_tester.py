@@ -1,7 +1,7 @@
-from Tester.tester import Tester
-from Tester.module import Module
-from Tester.hinter import Hinter
-from Tester.projectConfig import ProjectConfig
+from Demo.tester import Tester
+from Demo.module import Module
+from Demo.hinter import Hinter
+from Demo.projectConfig import ProjectConfig
 import math
 
 hinter = Hinter()

@@ -1,9 +1,9 @@
 from machine import Pin
 import time
-from Tester.hinter import Hinter
-from Tester.tester import Tester
-from Tester.projectConfig import ProjectConfig
-from Tester.module import Module
+from Demo.hinter import Hinter
+from Demo.tester import Tester
+from Demo.projectConfig import ProjectConfig
+from Demo.module import Module
 
 hinter = Hinter()
 

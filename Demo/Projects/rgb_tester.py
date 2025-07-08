@@ -1,10 +1,10 @@
 from machine import Pin, ADC
 from time import sleep, ticks_ms
 from pibody import EncoderSensor
-from Tester.module import Module 
-from Tester.projectConfig import ProjectConfig
-from Tester.tester import Tester
-from Tester.hinter import Hinter
+from Demo.module import Module 
+from Demo.projectConfig import ProjectConfig
+from Demo.tester import Tester
+from Demo.hinter import Hinter
 
 hinter = Hinter()
 

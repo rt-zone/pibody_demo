@@ -6,3 +6,4 @@ libs/*
 libs
 *.pyc
 pibody.py
+.github

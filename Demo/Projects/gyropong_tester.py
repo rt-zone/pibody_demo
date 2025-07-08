@@ -1,9 +1,9 @@
 from machine import Pin
 from pibody import GyroAxelSensor
-from Tester.tester import Tester
-from Tester.module import Module
-from Tester.projectConfig import ProjectConfig
-from Tester.hinter import Hinter
+from Demo.tester import Tester
+from Demo.module import Module
+from Demo.projectConfig import ProjectConfig
+from Demo.hinter import Hinter
 import time
 
 hinter = Hinter()

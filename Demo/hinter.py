@@ -1,6 +1,6 @@
 from pibody import Display
-from Tester.module import Module
-from Tester.projectConfig import ProjectConfig
+from Demo.module import Module
+from Demo.projectConfig import ProjectConfig
 
 SLOTS_COORDS = {
     "A": (10, 0),
@@ -10,6 +10,8 @@ SLOTS_COORDS = {
     "E": (150, 90),
     "F": (150, 180)
 }
+
+png_path = "Demo/module_pngs/"
     
 class Hinter():
     def __init__(self):
@@ -55,9 +57,9 @@ class Hinter():
         self.display.text("GP21", 204, 300, self.display.font_small, fg=self.display.CYAN)
         self.display.text("next", 170, 300, self.display.font_small)
         if led_tower:
-            self.display.png("module_pngs/led_tower.png", 110, 0)
+            self.display.png(f"{png_path}led_tower.png", 110, 0)
         if servo8 or servo9:
-            self.display.png("module_pngs/servo.png", 90, 200)
+            self.display.png(f"{png_path}servo.png", 90, 200)
             txt = "8" if servo8 else ""
             txt += "/" if servo8 and servo9 else ""
             txt += "9" if servo9 else ""

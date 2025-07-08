@@ -1,7 +1,7 @@
-from Tester.module import Module
-from Tester.tester import Tester
-from Tester.hinter import Hinter
-from Tester.projectConfig import ProjectConfig
+from Demo.module import Module
+from Demo.tester import Tester
+from Demo.hinter import Hinter
+from Demo.projectConfig import ProjectConfig
 from machine import Pin
 from pibody import ClimateSensor, ColorSensor, DistanceSensor, Display
 import time
