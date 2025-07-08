@@ -2,3 +2,7 @@
 __pycache__
 .micropico
 *.code-workspace
+libs/*
+libs
+*.pyc
+pibody.py
