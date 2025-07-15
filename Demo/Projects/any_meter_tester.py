@@ -86,10 +86,7 @@ def climatesensor_mode(np, data, data_max=temp_max, data_min=temp_min, color_dat
 
 
 ###--- Color Sensor Tester ---###
-def colorsensor_mode(np, color, leds_num=8):
-    r = min(int(color['red'] / 65535 * 255 * 4), 255)
-    g = min(int(color['green'] / 65535 * 255 * 3.4), 255)
-    b = min(int(color['blue'] / 65535 * 255 * 3.8), 255)
+def colorsensor_mode(np, r, g, b, leds_num=8):
     for i in range(leds_num):
         np[i] = (r, g, b)
     np.write()
@@ -196,9 +193,13 @@ class AnyMeterTester(Tester):
 
         # Color Sensor Tester
         elif self.mode == 0:
-            color = self.color_sensor.readRGB()
-            colorsensor_mode(self.led_tower, color)
-            hinter.display.text("Color Sensor is working   ", x, y - 22)
+            try:
+                r, g, b = self.color_sensor.readRGB()
+                colorsensor_mode(self.led_tower, r, g, b)
+                hinter.display.text("Color Sensor is working   ", x, y - 22)
+            except Exception as e:
+                print(f"Error starting tester: {e}")
+                
 
         # Microphone Tester
         elif self.mode == 1:
@@ -208,15 +209,21 @@ class AnyMeterTester(Tester):
 
         # Distance Sensor Tester
         elif self.mode == 2:
-            distance = self.distance_sensor.read()
-            distance_mode(self.led_tower, self.distance_sensor, distance)
-            hinter.display.text("Distance Sensor is working", x, y - 22)
+            try:
+                distance = self.distance_sensor.read()
+                distance_mode(self.led_tower, self.distance_sensor, distance)
+                hinter.display.text("Distance Sensor is working", x, y - 22)
+            except Exception as e:
+                print(f"Error starting tester: {e}")
         
         # Climate Sensor Tester
         elif self.mode == 3:
-            data = self.climate_sensor.read()
-            climatesensor_mode(self.led_tower, data["temperature"])
-            hinter.display.text("Climate Sensor is working ", x, y - 22)
+            try:
+                data = self.climate_sensor.read()
+                climatesensor_mode(self.led_tower, data["temperature"])
+                hinter.display.text("Climate Sensor is working ", x, y - 22)
+            except Exception as e:
+                print(f"Error starting tester: {e}")
 
         if not self.isRunning:
             hinter.drawModules(project_config)

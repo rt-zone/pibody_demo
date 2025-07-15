@@ -85,7 +85,7 @@ class GyroPongTester(Tester):
 
     def loop(self):
         global led_index, last_time, last_index
-        x, y, z = self.gyro.read_accel_data()
+        x, y, z = self.gyro.read_accel()
 
         if x > treshold:
             if (time.ticks_diff(time.ticks_ms(), last_time) > 250):
