@@ -172,11 +172,11 @@ class AnyMeterTester(Tester):
             if module.name == Module.TOUCH_SENSOR:
                 self.touch = module.getPin(Pin.IN)
             if module.name == Module.DISTANCE_SENSOR:
-                self.distance_sensor = DistanceSensor(module.getSlot(), soft_i2c=True)
+                self.distance_sensor = DistanceSensor(module.getSlot())
             if module.name == Module.CLIMATE_SENSOR:
-                self.climate_sensor = ClimateSensor(module.getSlot(), soft_i2c=True)
+                self.climate_sensor = ClimateSensor(module.getSlot())
             if module.name == Module.COLOR_SENSOR:
-               self.color_sensor = ColorSensor(module.getSlot(), soft_i2c=True)
+               self.color_sensor = ColorSensor(module.getSlot())
         self.mode = 0
         self.last_touch = 0
         
