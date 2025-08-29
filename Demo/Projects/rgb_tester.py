@@ -1,6 +1,6 @@
 from machine import Pin, ADC
 from time import sleep, ticks_ms
-from pibody import EncoderSensor
+from pibody import Encoder
 from Demo.module import Module 
 from Demo.projectConfig import ProjectConfig
 from Demo.tester import Tester
