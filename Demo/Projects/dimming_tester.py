@@ -49,7 +49,7 @@ class DimmingTester(Tester):
             if module.name == Module.LED_R:
                 self.led = module.getPWM()
                 self.led.freq(1000)
-            if module.name == Module.MOTION_DETECTOR:
+            if module.name == Module.MOTION_SENSOR:
                 self.motion = module.getPin(Pin.IN)
             if module.name == Module.LIGHT_SENSOR:
                 self.light = module.getADC()
