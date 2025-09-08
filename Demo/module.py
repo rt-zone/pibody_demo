@@ -80,7 +80,7 @@ class Module():
     LED_G = "led_green"
     LED_R = "led_red"
     LED_Y = "led_yellow"
-    MOTION_DETECTOR = "motion_detector"
+    MOTION_SENSOR = "motion_sensor"
     POTENTIOMETER = "potentiometer"
     SWITCH = "switch"
     TOUCH_SENSOR = "touch_sensor"
