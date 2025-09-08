@@ -1,5 +1,5 @@
 from machine import Pin
-from pibody import GyroAxelSensor
+from pibody import GyroAxel
 from Demo.tester import Tester
 from Demo.module import Module
 from Demo.projectConfig import ProjectConfig
@@ -80,7 +80,7 @@ class GyroPongTester(Tester):
                 self.buzzer = module.getPWM()
                 self.buzzer.freq(440)
             if module.name == Module.GYRO:
-                self.gyro = GyroAxelSensor(module.getSlot())
+                self.gyro = GyroAxel(module.getSlot())
         self.leds = [self.led_r, self.led_y, self.led_g]
 
     def loop(self):
