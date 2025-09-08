@@ -11,7 +11,7 @@ project_config = ProjectConfig(
     title="Dimming System",
     modules=[
         Module(Module.LED_R, "A"),
-        Module(Module.MOTION_DETECTOR, "B"),
+        Module(Module.MOTION_SENSOR, "B"),
         Module(Module.LIGHT_SENSOR, "C")
     ]
 )
