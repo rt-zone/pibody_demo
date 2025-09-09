@@ -13,7 +13,7 @@ project_config = ProjectConfig(
     title="Any Meter",
     modules=[
         Module(Module.TOUCH_SENSOR, 'D'),
-        Module(Module.MICROPHONE, 'C'),
+        Module(Module.SOUND_SENSOR, 'C'),
         Module(Module.COLOR_SENSOR, 'B'),
         Module(Module.DISTANCE_SENSOR, 'E'),
         Module(Module.CLIMATE_SENSOR, "F")
@@ -23,7 +23,7 @@ project_config = ProjectConfig(
 
 Modes = [
     "Color Sensor",
-    "Microphone",
+    "Sound Sensor",
     "Distance Sensor",
     "Climate Sensor"
 ]
@@ -95,10 +95,10 @@ def colorsensor_mode(np, r, g, b, leds_num=8):
 ###--- Color Sensor Tester ---###
 
 
-###--- Microphone Tester ---###
+###--- Sound Sensor Tester ---###
 max_deviation = 0
 
-def microphone_mode(np, mic_value, decay_rate=1000, leds_num=8):
+def soundsensor_mode(np, mic_value, decay_rate=1000, leds_num=8):
     global max_deviation
     deviation = abs(mic_value - 32768)
     if deviation > max_deviation:
@@ -120,7 +120,7 @@ def microphone_mode(np, mic_value, decay_rate=1000, leds_num=8):
     for i in range(fill_value, 8):
         np[i] = (0, 0, 0)
     np.write()
-###--- Microphone Tester ---###
+###--- Sound Sensor Tester ---###
 
 
 ###--- Distance Sensor Tester ---###
@@ -167,8 +167,8 @@ class AnyMeterTester(Tester):
     def init(self):
         super().init()
         for module in self.modules:
-            if module.name == Module.MICROPHONE:
-                self.microphone = module.getADC()
+            if module.name == Module.SOUND_SENSOR:
+                self.sound_sensor = module.getADC()
             if module.name == Module.TOUCH_SENSOR:
                 self.touch = module.getPin(Pin.IN)
             if module.name == Module.DISTANCE_SENSOR:
@@ -201,11 +201,11 @@ class AnyMeterTester(Tester):
                 print(f"Error starting tester: {e}")
                 
 
-        # Microphone Tester
+        # Sound Sensor Tester
         elif self.mode == 1:
-            mic_value = self.microphone.read_u16()
-            microphone_mode(self.led_tower, mic_value)
-            hinter.display.text("Microphone is working     ", x, y - 22)
+            mic_value = self.sound_sensor.read_u16()
+            soundsensor_mode(self.led_tower, mic_value)
+            hinter.display.text("Sound Sensor is working     ", x, y - 22)
 
         # Distance Sensor Tester
         elif self.mode == 2:
