@@ -89,9 +89,9 @@ class Module():
     COLOR_SENSOR = "color_sensor"
     DISTANCE_SENSOR = "distance_sensor"
     ENCODER = "encoder"
-    GYRO = "gyro"
+    GYRO_ACCEL = "gyro_accel"
     JOYSTICK = "joystick"
-    MICROPHONE = "microphone"
+    SOUND_SENSOR = "sound_sensor"
 
     @classmethod
     def getAllModules(cls):
