@@ -144,7 +144,7 @@ class NeoPixelTester(Tester):
             if module.name == Module.SWITCH:
                 self.switch = module.getPin(Pin.IN)
             if module.name == Module.ENCODER:
-                self.encoder = EncoderSensor(module.getSlot())
+                self.encoder = Encoder(module.getSlot())
         self.np = self.led_tower
         self.manager = ModeManager(self.np, self.adc, self.encoder, 8)
 
