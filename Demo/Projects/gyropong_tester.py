@@ -15,7 +15,7 @@ project_config = ProjectConfig(
         Module(Module.LED_Y, "B"),
         Module(Module.LED_G, "C"),
         Module(Module.BUZZER, "D"),
-        Module(Module.GYRO, "E")
+        Module(Module.GYRO_ACCEL, "E")
     ]
 )
 
@@ -79,13 +79,13 @@ class GyroPongTester(Tester):
             if module.name == Module.BUZZER:
                 self.buzzer = module.getPWM()
                 self.buzzer.freq(440)
-            if module.name == Module.GYRO:
-                self.gyro = GyroAxel(module.getSlot())
+            if module.name == Module.GYRO_ACCEL:
+                self.gyro_accel = GyroAxel(module.getSlot())
         self.leds = [self.led_r, self.led_y, self.led_g]
 
     def loop(self):
         global led_index, last_time, last_index
-        x, y, z = self.gyro.read_accel()
+        x, y, z = self.gyro_accel.read_accel()
 
         if x > treshold:
             if (time.ticks_diff(time.ticks_ms(), last_time) > 250):
